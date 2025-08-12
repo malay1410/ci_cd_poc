@@ -83,6 +83,18 @@ jobs:
           path: transfer/app-image.tar
           retention-days: 3
 
+      - name: Check TCP reachability (SSH)
+        run: |
+          set -e
+          H=${{ secrets.SSH_HOST }}
+          P=${{ secrets.SSH_PORT || 22 }}
+          echo "Probing $H:$P ..."
+          if timeout 5 bash -lc "cat < /dev/null > /dev/tcp/$H/$P"; then
+            echo "OK: Port open"
+          else
+            echo "FAIL: Cannot reach $H:$P from GitHub runner"
+            exit 1
+
       - name: Copy image tar to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -93,6 +105,8 @@ jobs:
           source: "transfer/*"
           target: "~/ci-cd-poc/"
           overwrite: true
+          timeout: 120s
+          command_timeout: 20m
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -100,7 +114,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT || 22 }}
+          port: ${{ secrets.SSH_PORT}}
           script: |
             set -euo pipefail
             cd ~/ci-cd-poc
