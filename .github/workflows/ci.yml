@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
 
 jobs:
@@ -25,8 +25,10 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
+      - name: Test (ESM)
         run: npm test
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
 
       - name: Build Docker (no push)
         uses: docker/build-push-action@v6
