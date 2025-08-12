@@ -1,0 +1,25 @@
+{
+  "name": "ci-cd-poc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/index.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "lint": "eslint .",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "cross-env": "^10.0.0",
+    "eslint": "^9.33.0",
+    "jest": "^30.0.5",
+    "supertest": "^7.1.4"
+  }
+}
