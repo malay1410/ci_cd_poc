@@ -9,7 +9,7 @@ describe("GET /", () => {
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
       ok: true,
-      message: "CI/CD PoC says hi 👋 first test",
+      message: "CI/CD PoC says hi 👋 first test ",
     });
   });
 });
