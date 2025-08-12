@@ -94,6 +94,7 @@ jobs:
           else
             echo "FAIL: Cannot reach $H:$P from GitHub runner"
             exit 1
+          fi
 
       - name: Copy image tar to server
         uses: appleboy/scp-action@v0.1.7
