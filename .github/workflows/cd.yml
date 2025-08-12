@@ -64,17 +64,23 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          load: true # important: load into local docker
+          load: true
           tags: ${{ env.IMAGE_NAME }}:latest
 
       - name: Save image as tar
         run: docker save ${{ env.IMAGE_NAME }}:latest -o app-image.tar
 
+      - name: Prep transfer (folder + permissive read)
+        run: |
+          mkdir -p transfer
+          mv app-image.tar transfer/
+          chmod -R a+r transfer
+
       - name: Upload artifact (for debugging, optional)
         uses: actions/upload-artifact@v4
         with:
           name: app-image-tar
-          path: app-image.tar
+          path: transfer/app-image.tar
           retention-days: 3
 
       - name: Copy image tar to server
@@ -84,8 +90,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || 22 }}
-          source: "app-image.tar"
-          target: "~/ci-cd-poc/app-image.tar"
+          source: "transfer/*"
+          target: "~/ci-cd-poc/"
           overwrite: true
 
       - name: Deploy over SSH
@@ -106,7 +112,6 @@ jobs:
             docker rm -f ${{ env.CONTAINER_NAME }} || true
 
             echo "[3/5] Starting new container"
-            # Map host port -> container 3000 from the Express app
             docker run -d --restart=always \
               --name ${{ env.CONTAINER_NAME }} \
               -p ${{ env.HOST_PORT }}:3000 \
@@ -118,3 +123,4 @@ jobs:
 
             echo "[5/5] Cleanup old images"
             docker image prune -f || true
+            echo "Deployment Complete!!!"
