@@ -23,16 +23,23 @@
     "jest": "^30.0.5",
     "supertest": "^7.1.4"
   },
-  "env": {
-    "node": true,
-    "es2021": true
-  },
-  "overrides": {
-    "files": [
-      "tests/**/*.js"
-    ],
+  "eslintConfig": {
     "env": {
-      "jest": true
-    }
+      "node": true,
+      "es2021": true
+    },
+    "overrides": [
+      {
+        "files": [
+          "tests/**/*.js"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ],
+    "ignorePatterns": [
+      "node_modules/"
+    ]
   }
 }
